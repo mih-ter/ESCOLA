@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu - EduFox</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Ícone de logout no canto -->
+    <div class="logout-icon" id="logoutIcon">&#9776;</div>
+
+    <div class="menu-container">
+        <h1>Bem-vindo ao sistema de ocorrências</h1>
+        <p id="tipoUsuarioDisplay"></p>
+
+        <div class="menu-buttons">
+            <a href="registrar-ocorrencias.html" class="menu-btn">Registrar Ocorrência</a>
+            <a href="ocorrencias.html" class="menu-btn">Ver Ocorrências</a>
+            <a href="alunos-destaque.html" class="menu-btn">Alunos Destaques</a>
+        </div>
+    </div>
+
+    <script src="js/scripts.js"></script>
+    <script>
+        // Logout ao clicar no ícone
+        document.getElementById('logoutIcon').addEventListener('click', function() {
+            sessionStorage.clear();
+            window.location.href = 'index.html';
+        });
+    </script>
+</body>
+</html>

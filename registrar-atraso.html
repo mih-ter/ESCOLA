@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Atraso - EduFox</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Logout -->
+  <div class="logout-icon" id="logoutIcon">&#9776;</div>
+
+  <div class="form-container">
+    <h1>Registrar Atraso</h1>
+
+    <form id="atrasoForm">
+      <!-- Seleção de Sala -->
+      <label for="sala">Selecione uma sala:</label>
+      <select id="sala" required>
+        <option value="" disabled selected>Selecione uma sala</option>
+        <option value="2NT">2 NT</option>
+        <option value="3NT">3 NT</option>
+      </select>
+
+      <!-- Seleção de Aluno -->
+      <label for="aluno">Selecione um aluno:</label>
+      <select id="aluno" disabled required>
+        <option value="" disabled selected>Selecione uma sala primeiro</option>
+      </select>
+
+      <!-- Data automática -->
+      <label for="data">Data:</label>
+      <input type="date" id="data" readonly>
+
+      <!-- Descrição -->
+      <label for="descricao">Descrição do atraso:</label>
+      <textarea id="descricao" rows="4" placeholder="Descreva o atraso..." required></textarea>
+
+      <button type="submit">Registrar</button>
+    </form>
+
+    <p id="successMsg" class="success-msg"></p>
+  </div>
+
+  <script>
+    // Logout
+    document.getElementById('logoutIcon').addEventListener('click', function() {
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    });
+
+    // Menu dependente: Sala -> Aluno
+    const salaSelect = document.getElementById('sala');
+    const alunoSelect = document.getElementById('aluno');
+
+    const alunosPorSala = {
+      "2NT": ["Pedro", "Tgas", "João"],
+      "3NT": ["Millena", "Murilo", "Gabi"]
+    };
+
+    salaSelect.addEventListener('change', function() {
+      const sala = salaSelect.value;
+      alunoSelect.innerHTML = '';
+      alunoSelect.disabled = false;
+
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Selecione um aluno';
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      alunoSelect.appendChild(defaultOption);
+
+      alunosPorSala[sala].forEach(aluno => {
+        const option = document.createElement('option');
+        option.value = aluno;
+        option.textContent = aluno;
+        alunoSelect.appendChild(option);
+      });
+    });
+
+    // Data automática
+    const dataInput = document.getElementById('data');
+    function atualizarData() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      dataInput.value = `${ano}-${mes}-${dia}`;
+    }
+    atualizarData();
+    setInterval(atualizarData, 60000);
+
+    // Registrar atraso
+    const form = document.getElementById('atrasoForm');
+    const successMsg = document.getElementById('successMsg');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const sala = salaSelect.value;
+      const aluno = alunoSelect.value;
+      const data = dataInput.value;
+      const descricao = document.getElementById('descricao').value;
+
+      if (!sala || !aluno || !descricao) {
+        alert('Preencha todos os campos!');
+        return;
+      }
+
+      console.log(`Sala: ${sala}, Aluno: ${aluno}, Data: ${data}, Descrição: ${descricao}`);
+
+      successMsg.textContent = `Atraso registrado com sucesso para ${aluno} (${sala}) em ${data}!`;
+      form.reset();
+      alunoSelect.disabled = true;
+      atualizarData();
+    });
+  </script>
+</body>
+</html>

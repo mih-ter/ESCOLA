@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Suspensão - EduFox</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Logout -->
+  <div class="logout-icon" id="logoutIcon">&#9776;</div>
+
+  <div class="form-container">
+    <h1>Registrar Suspensão</h1>
+
+    <form id="suspensaoForm">
+      <!-- Seleção de Sala -->
+      <label for="sala">Selecione uma sala:</label>
+      <select id="sala" required>
+        <option value="" disabled selected>Selecione uma sala</option>
+        <option value="2NT">2 NT</option>
+        <option value="3NT">3 NT</option>
+      </select>
+
+      <!-- Seleção de Aluno -->
+      <label for="aluno">Selecione um aluno:</label>
+      <select id="aluno" disabled required>
+        <option value="" disabled selected>Selecione uma sala primeiro</option>
+      </select>
+
+      <!-- Seleção do Tipo -->
+      <label for="tipo">Selecione o tipo:</label>
+      <select id="tipo" required>
+        <option value="" disabled selected>Selecione o tipo</option>
+        <option value="Comportamento">Comportamento</option>
+        <option value="Atraso">Atraso</option>
+      </select>
+
+      <!-- Quantidade de dias -->
+      <label for="dias">Quantidade de dias:</label>
+      <select id="dias" required>
+        <option value="" disabled selected>Selecione a quantidade de dias</option>
+        <option value="1">1 dia</option>
+        <option value="2">2 dias</option>
+        <option value="3">3 dias</option>
+        <option value="5">5 dias</option>
+      </select>
+
+      <!-- Data automática -->
+      <label for="data">Data:</label>
+      <input type="date" id="data" readonly>
+
+      <!-- Observações -->
+      <label for="observacoes">Observações:</label>
+      <textarea id="observacoes" rows="4" placeholder="Descreva a suspensão..." required></textarea>
+
+      <button type="submit">Registrar</button>
+    </form>
+
+    <p id="successMsg" class="success-msg"></p>
+  </div>
+
+  <script>
+    // Logout
+    document.getElementById('logoutIcon').addEventListener('click', function() {
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    });
+
+    // Menu dependente: Sala -> Aluno
+    const salaSelect = document.getElementById('sala');
+    const alunoSelect = document.getElementById('aluno');
+
+    const alunosPorSala = {
+      "2NT": ["Pedro", "Tgas", "João"],
+      "3NT": ["Millena", "Murilo", "Gabi"]
+    };
+
+    salaSelect.addEventListener('change', function() {
+      const sala = salaSelect.value;
+      alunoSelect.innerHTML = '';
+      alunoSelect.disabled = false;
+
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Selecione um aluno';
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      alunoSelect.appendChild(defaultOption);
+
+      alunosPorSala[sala].forEach(aluno => {
+        const option = document.createElement('option');
+        option.value = aluno;
+        option.textContent = aluno;
+        alunoSelect.appendChild(option);
+      });
+    });
+
+    // Data automática
+    const dataInput = document.getElementById('data');
+    function atualizarData() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      dataInput.value = `${ano}-${mes}-${dia}`;
+    }
+    atualizarData();
+    setInterval(atualizarData, 60000);
+
+    // Registrar suspensão
+    const form = document.getElementById('suspensaoForm');
+    const successMsg = document.getElementById('successMsg');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const sala = salaSelect.value;
+      const aluno = alunoSelect.value;
+      const tipo = document.getElementById('tipo').value;
+      const dias = document.getElementById('dias').value;
+      const data = dataInput.value;
+      const observacoes = document.getElementById('observacoes').value;
+
+      if (!sala || !aluno || !tipo || !dias || !observacoes) {
+        alert('Preencha todos os campos!');
+        return;
+      }
+
+      console.log(`Sala: ${sala}, Aluno: ${aluno}, Tipo: ${tipo}, Dias: ${dias}, Data: ${data}, Observações: ${observacoes}`);
+
+      successMsg.textContent = `Suspensão registrada com sucesso para ${aluno} (${sala}) - ${tipo} por ${dias} dia(s) em ${data}!`;
+      form.reset();
+      alunoSelect.disabled = true;
+      atualizarData();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registrar Ocorrência - EduFox</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Botão Voltar ao Menu -->
+  <div style="padding: 10px; background-color: #007bff;">
+    <button id="voltarMenu" style="
+      background-color: white;
+      color: #007bff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    ">← Voltar ao Menu</button>
+  </div>
+
+  <!-- Ícone de logout -->
+  <div class="logout-icon" id="logoutIcon">&#9776;</div>
+
+  <div class="form-container">
+    <h1>Registrar Ocorrência</h1>
+
+    <form id="ocorrenciaForm">
+      <!-- Seleção de Sala -->
+      <label for="sala">Selecione uma sala:</label>
+      <select id="sala" required>
+        <option value="" disabled selected>Selecione uma sala</option>
+        <option value="2NT">2 NT</option>
+        <option value="3NT">3 NT</option>
+      </select>
+
+      <!-- Seleção de Aluno -->
+      <label for="aluno">Selecione um aluno:</label>
+      <select id="aluno" disabled required>
+        <option value="" disabled selected>Selecione uma sala primeiro</option>
+      </select>
+
+      <!-- Seleção do Tipo -->
+      <label for="tipo">Selecione o tipo:</label>
+      <select id="tipo" required>
+        <option value="" disabled selected>Selecione o tipo</option>
+        <option value="Por celular">Por celular</option>
+        <option value="Por comportamento">Por comportamento</option>
+      </select>
+
+      <!-- Data automática -->
+      <label for="data">Data da Ocorrência:</label>
+      <input type="date" id="data" readonly>
+
+      <!-- Digite a matéria -->
+      <label for="materia">Digite a matéria:</label>
+      <input type="text" id="materia" placeholder="Ex: Matemática, Português..." required>
+
+      <!-- Descrição -->
+      <label for="descricao">Descrição da Ocorrência:</label>
+      <textarea id="descricao" rows="4" placeholder="Descreva a ocorrência..." required></textarea>
+
+      <button type="submit">Registrar</button>
+    </form>
+
+    <p id="successMsg" class="success-msg"></p>
+  </div>
+
+  <script>
+    // Botão Voltar ao Menu
+    document.getElementById('voltarMenu').addEventListener('click', () => {
+      window.location.href = 'menu.html';
+    });
+
+    // Logout
+    document.getElementById('logoutIcon').addEventListener('click', function() {
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    });
+
+    // Menu dependente: Sala -> Aluno
+    const salaSelect = document.getElementById('sala');
+    const alunoSelect = document.getElementById('aluno');
+
+    const alunosPorSala = {
+      "2NT": ["Pedro", "Tgas", "João"],
+      "3NT": ["Millena", "Murilo", "Gabi"]
+    };
+
+    salaSelect.addEventListener('change', function() {
+      const sala = salaSelect.value;
+      alunoSelect.innerHTML = '';
+      alunoSelect.disabled = false;
+
+      const defaultOption = document.createElement('option');
+      defaultOption.value = '';
+      defaultOption.textContent = 'Selecione um aluno';
+      defaultOption.disabled = true;
+      defaultOption.selected = true;
+      alunoSelect.appendChild(defaultOption);
+
+      alunosPorSala[sala].forEach(aluno => {
+        const option = document.createElement('option');
+        option.value = aluno;
+        option.textContent = aluno;
+        alunoSelect.appendChild(option);
+      });
+    });
+
+    // Data automática
+    const dataInput = document.getElementById('data');
+    function atualizarData() {
+      const hoje = new Date();
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, '0');
+      const dia = String(hoje.getDate()).padStart(2, '0');
+      dataInput.value = `${ano}-${mes}-${dia}`;
+    }
+    atualizarData();
+    setInterval(atualizarData, 60000);
+
+    // Registrar ocorrência
+    const form = document.getElementById('ocorrenciaForm');
+    const successMsg = document.getElementById('successMsg');
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const sala = salaSelect.value;
+      const aluno = alunoSelect.value;
+      const tipo = document.getElementById('tipo').value;
+      const data = dataInput.value;
+      const materia = document.getElementById('materia').value;
+      const descricao = document.getElementById('descricao').value;
+
+      if (!sala || !aluno || !tipo || !materia || !descricao) {
+        alert('Preencha todos os campos!');
+        return;
+      }
+
+      console.log(`Sala: ${sala}, Aluno: ${aluno}, Tipo: ${tipo}, Data: ${data}, Matéria: ${materia}, Descrição: ${descricao}`);
+
+      successMsg.textContent = `Ocorrência registrada com sucesso para ${aluno} (${sala}) - ${tipo} em ${data}!`;
+      form.reset();
+      alunoSelect.disabled = true;
+      atualizarData();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ver Atrasos - EduFox</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Logout -->
+  <div class="logout-icon" id="logoutIcon">&#9776;</div>
+
+  <div class="form-container">
+    <h1>Ver Atrasos</h1>
+
+    <!-- Seleção de sala -->
+    <label for="sala">Selecione uma sala:</label>
+    <select id="salaSelect">
+      <option value="" disabled selected>Selecione uma sala</option>
+      <option value="2NT">2 NT</option>
+      <option value="3NT">3 NT</option>
+    </select>
+
+    <!-- Lista de alunos -->
+    <div id="alunosContainer" style="margin-top: 20px;"></div>
+  </div>
+
+  <script>
+    // Logout
+    document.getElementById('logoutIcon').addEventListener('click', function() {
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    });
+
+    const salaSelect = document.getElementById('salaSelect');
+    const alunosContainer = document.getElementById('alunosContainer');
+
+    // Exemplo de atrasos por aluno
+    const atrasosDB = {
+      "2NT": {
+        "Pedro": 0,
+        "Tgas": 0,
+        "João": 0
+      },
+      "3NT": {
+        "Millena": 0,
+        "Murilo": 0,
+        "Gabi": 0
+      }
+    };
+
+    // Ao selecionar a sala
+    salaSelect.addEventListener('change', function() {
+      const sala = salaSelect.value;
+      alunosContainer.innerHTML = ''; // limpa
+
+      if (!atrasosDB[sala]) return;
+
+      const alunos = atrasosDB[sala];
+      for (const aluno in alunos) {
+        const alunoBtn = document.createElement('button');
+        alunoBtn.textContent = `${aluno} - ${alunos[aluno]} atrasos`;
+        alunoBtn.classList.add('menu-btn'); // estilo dos botões
+        alunoBtn.style.width = '100%';
+        alunoBtn.style.marginBottom = '0.5rem';
+
+        // Ao clicar no aluno, abre tela de edição
+        alunoBtn.addEventListener('click', function() {
+          sessionStorage.setItem('alunoSelecionado', aluno);
+          sessionStorage.setItem('salaSelecionada', sala);
+          window.location.href = 'editar-atraso.html';
+        });
+
+        alunosContainer.appendChild(alunoBtn);
+      }
+    });
+  </script>
+</body>
+</html>

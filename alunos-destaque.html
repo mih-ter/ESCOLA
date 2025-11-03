@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alunos Destaque - EduFox</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .bimestre-section {
+      margin-top: 20px;
+    }
+
+    .bimestre-section h2 {
+      color: #007bff;
+      border-bottom: 2px solid #007bff;
+      padding-bottom: 5px;
+    }
+
+    .alunos-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 10px;
+    }
+
+    .aluno-card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 150px;
+      padding: 1rem;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .aluno-card:hover {
+      transform: scale(1.05);
+    }
+
+    .aluno-card img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 0.5rem;
+    }
+
+    .aluno-card h3 {
+      margin: 0.5rem 0 0.2rem 0;
+      font-size: 1rem;
+      color: #333;
+    }
+
+    .aluno-card p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <!-- Botão Voltar ao Menu -->
+  <div style="padding: 10px; background-color: #007bff;">
+    <button id="voltarMenu" style="
+      background-color: white;
+      color: #007bff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+    ">← Voltar ao Menu</button>
+  </div>
+
+  <div class="form-container">
+    <h1>Alunos Destaque</h1>
+
+    <!-- Seções por bimestres -->
+    <div id="bimestresContainer"></div>
+  </div>
+
+  <script>
+    // Voltar ao menu
+    document.getElementById('voltarMenu').addEventListener('click', () => {
+      window.location.href = 'menu.html';
+    });
+
+    // Dados dos alunos por bimestre
+    const bimestres = {
+      "1º Bimestre": [
+        { nome: "Pedro", sala: "2NT", foto: "fotos/pedro.jpg" },
+        { nome: "Millena", sala: "3NT", foto: "fotos/millena.jpg" }
+      ],
+      "2º Bimestre": [
+        { nome: "Tgas", sala: "2NT", foto: "fotos/tgas.jpg" },
+        { nome: "Murilo", sala: "3NT", foto: "fotos/murilo.jpg" }
+      ],
+      "3º Bimestre": [
+        { nome: "João", sala: "2NT", foto: "fotos/joao.jpg" },
+        { nome: "Gabi", sala: "3NT", foto: "fotos/gabi.jpg" }
+      ],
+      "4º Bimestre": [
+        { nome: "Pedro", sala: "2NT", foto: "fotos/pedro.jpg" },
+        { nome: "Millena", sala: "3NT", foto: "fotos/millena.jpg" }
+      ]
+    };
+
+    const bimestresContainer = document.getElementById('bimestresContainer');
+
+    for (const bimestre in bimestres) {
+      const section = document.createElement('div');
+      section.classList.add('bimestre-section');
+
+      const title = document.createElement('h2');
+      title.textContent = bimestre;
+      section.appendChild(title);
+
+      const alunosContainer = document.createElement('div');
+      alunosContainer.classList.add('alunos-container');
+
+      bimestres[bimestre].forEach(aluno => {
+        const card = document.createElement('div');
+        card.classList.add('aluno-card');
+
+        const img = document.createElement('img');
+        img.src = aluno.foto;
+        img.alt = aluno.nome;
+
+        const nome = document.createElement('h3');
+        nome.textContent = aluno.nome;
+
+        const sala = document.createElement('p');
+        sala.textContent = aluno.sala;
+
+        card.appendChild(img);
+        card.appendChild(nome);
+        card.appendChild(sala);
+        alunosContainer.appendChild(card);
+      });
+
+      section.appendChild(alunosContainer);
+      bimestresContainer.appendChild(section);
+    }
+  </script>
+</body>
+</html>
